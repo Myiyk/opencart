@@ -10,7 +10,7 @@
  */
 
 // Version
-define('CONFIG_ADMIN', __DIR__ . '/../../upload/admin/config.php');
+define('CONFIG_ADMIN', __DIR__ . '/../../www/admin/config.php');
 require('./config.php');
 
 require(CONFIG_ADMIN);
