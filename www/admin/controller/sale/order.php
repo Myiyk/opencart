@@ -1086,7 +1086,7 @@ class ControllerSaleOrder extends Controller {
 			$data['account_custom_field'] = $order_info['custom_field'];
 
 			// Uploaded files
-			$this->load->model('tool/www');
+			$this->load->model('tool/upload');
 
 			// Custom Fields
 			$this->load->model('sale/custom_field');
@@ -1337,7 +1337,7 @@ class ControllerSaleOrder extends Controller {
 								'name'  => $option['name'],
 								'value' => $upload_info['name'],
 								'type'  => $option['type'],
-								'href'  => $this->url->link('tool/www/download', 'token=' . $this->session->data['token'] . '&code=' . $upload_info['code'], 'SSL')
+								'href'  => $this->url->link('tool/upload/download', 'token=' . $this->session->data['token'] . '&code=' . $upload_info['code'], 'SSL')
 							);
 						}
 					}
@@ -1870,7 +1870,7 @@ class ControllerSaleOrder extends Controller {
 
 				$shipping_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
-				$this->load->model('tool/www');
+				$this->load->model('tool/upload');
 
 				$product_data = array();
 
@@ -2078,7 +2078,7 @@ class ControllerSaleOrder extends Controller {
 
 				$shipping_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
-				$this->load->model('tool/www');
+				$this->load->model('tool/upload');
 
 				$product_data = array();
 

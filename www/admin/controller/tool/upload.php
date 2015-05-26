@@ -3,21 +3,21 @@ class ControllerToolUpload extends Controller {
 	private $error = array();
 
 	public function index() {
-		$this->load->language('tool/www');
+		$this->load->language('tool/upload');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('tool/www');
+		$this->load->model('tool/upload');
 
 		$this->getList();
 	}
 
 	public function delete() {
-		$this->load->language('tool/www');
+		$this->load->language('tool/upload');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('tool/www');
+		$this->load->model('tool/upload');
 
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
 			foreach ($this->request->post['selected'] as $upload_id) {
@@ -55,7 +55,7 @@ class ControllerToolUpload extends Controller {
 				$url .= '&page=' . $this->request->get['page'];
 			}
 
-			$this->response->redirect($this->url->link('tool/www', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+			$this->response->redirect($this->url->link('tool/upload', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 
 		$this->getList();
@@ -123,10 +123,10 @@ class ControllerToolUpload extends Controller {
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('tool/www', 'token=' . $this->session->data['token'] . $url, 'SSL')
+			'href' => $this->url->link('tool/upload', 'token=' . $this->session->data['token'] . $url, 'SSL')
 		);
 
-		$data['delete'] = $this->url->link('tool/www/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['delete'] = $this->url->link('tool/upload/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		$data['uploads'] = array();
 
@@ -149,7 +149,7 @@ class ControllerToolUpload extends Controller {
 				'name'       => $result['name'],
 				'filename'   => $result['filename'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'download'   => $this->url->link('tool/www/download', 'token=' . $this->session->data['token'] . '&code=' . $result['code'] . $url, 'SSL')
+				'download'   => $this->url->link('tool/upload/download', 'token=' . $this->session->data['token'] . '&code=' . $result['code'] . $url, 'SSL')
 			);
 		}
 
@@ -205,9 +205,9 @@ class ControllerToolUpload extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-		$data['sort_name'] = $this->url->link('tool/www', 'token=' . $this->session->data['token'] . '&sort=name' . $url, 'SSL');
-		$data['sort_filename'] = $this->url->link('tool/www', 'token=' . $this->session->data['token'] . '&sort=filename' . $url, 'SSL');
-		$data['sort_date_added'] = $this->url->link('tool/www', 'token=' . $this->session->data['token'] . '&sort=date_added' . $url, 'SSL');
+		$data['sort_name'] = $this->url->link('tool/upload', 'token=' . $this->session->data['token'] . '&sort=name' . $url, 'SSL');
+		$data['sort_filename'] = $this->url->link('tool/upload', 'token=' . $this->session->data['token'] . '&sort=filename' . $url, 'SSL');
+		$data['sort_date_added'] = $this->url->link('tool/upload', 'token=' . $this->session->data['token'] . '&sort=date_added' . $url, 'SSL');
 
 		$url = '';
 
@@ -231,7 +231,7 @@ class ControllerToolUpload extends Controller {
 		$pagination->total = $upload_total;
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_limit_admin');
-		$pagination->url = $this->url->link('tool/www', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
+		$pagination->url = $this->url->link('tool/upload', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
 
 		$data['pagination'] = $pagination->render();
 
@@ -247,11 +247,11 @@ class ControllerToolUpload extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('tool/www.tpl', $data));
+		$this->response->setOutput($this->load->view('tool/upload.tpl', $data));
 	}
 
 	protected function validateDelete() {
-		if (!$this->user->hasPermission('modify', 'tool/www')) {
+		if (!$this->user->hasPermission('modify', 'tool/upload')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
@@ -259,7 +259,7 @@ class ControllerToolUpload extends Controller {
 	}
 
 	public function download() {
-		$this->load->model('tool/www');
+		$this->load->model('tool/upload');
 
 		if (isset($this->request->get['code'])) {
 			$code = $this->request->get['code'];
@@ -327,7 +327,7 @@ class ControllerToolUpload extends Controller {
 		$json = array();
 
 		// Check user has permission
-		if (!$this->user->hasPermission('modify', 'tool/www')) {
+		if (!$this->user->hasPermission('modify', 'tool/upload')) {
 			$json['error'] = $this->language->get('error_permission');
 		}
 
@@ -377,7 +377,7 @@ class ControllerToolUpload extends Controller {
 					$json['error'] = $this->language->get('error_filetype');
 				}
 
-				// Return any www error
+				// Return any upload error
 				if ($this->request->files['file']['error'] != UPLOAD_ERR_OK) {
 					$json['error'] = $this->language->get('error_upload_' . $this->request->files['file']['error']);
 				}
@@ -392,7 +392,7 @@ class ControllerToolUpload extends Controller {
 			move_uploaded_file($this->request->files['file']['tmp_name'], DIR_UPLOAD . $file);
 
 			// Hide the uploaded file name so people can not link to it directly.
-			$this->load->model('tool/www');
+			$this->load->model('tool/upload');
 
 			$json['code'] = $this->model_tool_upload->addUpload($filename, $file);
 

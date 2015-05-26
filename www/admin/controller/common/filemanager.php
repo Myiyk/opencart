@@ -262,7 +262,7 @@ class ControllerCommonFileManager extends Controller {
 					$json['error'] = $this->language->get('error_filetype');
 				}
 
-				// Return any www error
+				// Return any upload error
 				if ($this->request->files['file']['error'] != UPLOAD_ERR_OK) {
 					$json['error'] = $this->language->get('error_upload_' . $this->request->files['file']['error']);
 				}

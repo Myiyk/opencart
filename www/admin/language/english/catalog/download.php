@@ -20,7 +20,7 @@ $_['entry_filename']    = 'Filename';
 $_['entry_mask']        = 'Mask';
 
 // Help
-$_['help_filename']     = 'You can www via the www button or use FTP to www to the download directory and enter the details below.';
+$_['help_filename']     = 'You can upload via the upload button or use FTP to upload to the download directory and enter the details below.';
 $_['help_mask']         = 'It is recommended that the filename and the mask are different to stop people trying to directly link to your downloads.';
 
 // Error

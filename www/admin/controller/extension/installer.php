@@ -112,7 +112,7 @@ class ControllerExtensionInstaller extends Controller {
 
 			// If zip file copy it to the temp directory
 			if (strrchr($this->request->files['file']['name'], '.') == '.zip') {
-				$file = DIR_UPLOAD . $path . '/www.zip';
+				$file = DIR_UPLOAD . $path . '/upload.zip';
 
 				move_uploaded_file($this->request->files['file']['tmp_name'], $file);
 
@@ -168,28 +168,28 @@ class ControllerExtensionInstaller extends Controller {
 							// Compare admin files
 							$file = DIR_APPLICATION . substr($zip_name, 13);
 
-							if (is_file($file) && substr($zip_name, 0, 13) == 'www/admin/') {
+							if (is_file($file) && substr($zip_name, 0, 13) == 'upload/admin/') {
 								$json['overwrite'][] = substr($zip_name, 7);
 							}
 
 							// Compare catalog files
 							$file = DIR_CATALOG . substr($zip_name, 15);
 
-							if (is_file($file) && substr($zip_name, 0, 15) == 'www/catalog/') {
+							if (is_file($file) && substr($zip_name, 0, 15) == 'upload/catalog/') {
 								$json['overwrite'][] = substr($zip_name, 7);
 							}
 
 							// Compare image files
 							$file = DIR_IMAGE . substr($zip_name, 13);
 
-							if (is_file($file) && substr($zip_name, 0, 13) == 'www/image/') {
+							if (is_file($file) && substr($zip_name, 0, 13) == 'upload/image/') {
 								$json['overwrite'][] = substr($zip_name, 7);
 							}
 
 							// Compare system files
 							$file = DIR_SYSTEM . substr($zip_name, 14);
 
-							if (is_file($file) && substr($zip_name, 0, 14) == 'www/system/') {
+							if (is_file($file) && substr($zip_name, 0, 14) == 'upload/system/') {
 								$json['overwrite'][] = substr($zip_name, 7);
 							}
 						}
@@ -225,7 +225,7 @@ class ControllerExtensionInstaller extends Controller {
 		}
 
 		// Sanitize the filename
-		$file = DIR_UPLOAD . str_replace(array('../', '..\\', '..'), '', $this->request->post['path']) . '/www.zip';
+		$file = DIR_UPLOAD . str_replace(array('../', '..\\', '..'), '', $this->request->post['path']) . '/upload.zip';
 
 		if (!file_exists($file)) {
 			$json['error'] = $this->language->get('error_file');
@@ -264,14 +264,14 @@ class ControllerExtensionInstaller extends Controller {
 			$json['error'] = $this->language->get('error_ftp_status');
 		}
 
-		$directory = DIR_UPLOAD . str_replace(array('../', '..\\', '..'), '', $this->request->post['path']) . '/www/';
+		$directory = DIR_UPLOAD . str_replace(array('../', '..\\', '..'), '', $this->request->post['path']) . '/upload/';
 
 		if (!is_dir($directory)) {
 			$json['error'] = $this->language->get('error_directory');
 		}
 
 		if (!$json) {
-			// Get a list of files ready to www
+			// Get a list of files ready to upload
 			$files = array();
 
 			$path = array($directory . '*');
@@ -305,7 +305,7 @@ class ControllerExtensionInstaller extends Controller {
 						foreach ($files as $file) {
 							$destination = substr($file, strlen($directory));
 
-							// Upload everything in the www directory
+							// Upload everything in the upload directory
 							// Many people rename their admin folder for security purposes which I believe should be an option during installation just like setting the db prefix.
 							// the following code would allow you to change the name of the following directories and any extensions installed will still go to the right directory.
 							if (substr($destination, 0, 5) == 'admin') {
@@ -548,7 +548,7 @@ class ControllerExtensionInstaller extends Controller {
 		}
 
 		if (!$json) {
-			// Get a list of files ready to www
+			// Get a list of files ready to upload
 			$files = array();
 
 			$path = array($directory);
@@ -602,7 +602,7 @@ class ControllerExtensionInstaller extends Controller {
 			$directories = glob(DIR_UPLOAD . 'temp-*', GLOB_ONLYDIR);
 
 			foreach ($directories as $directory) {
-				// Get a list of files ready to www
+				// Get a list of files ready to upload
 				$files = array();
 
 				$path = array($directory);

@@ -330,7 +330,7 @@ class ControllerOpenbayAmazonProduct extends Controller {
 		if (empty($saved_products)) {
 			$logger->write('No saved listings found. Uploading canceled . ');
 			$result['status'] = 'error';
-			$result['error_message'] = 'No saved listings. Nothing to www. Aborting . ';
+			$result['error_message'] = 'No saved listings. Nothing to upload. Aborting . ';
 			return $result;
 		}
 
@@ -357,7 +357,7 @@ class ControllerOpenbayAmazonProduct extends Controller {
 				$result['status'] = 'error';
 				break;
 			}
-			$logger->write('Product www success');
+			$logger->write('Product upload success');
 			$this->model_openbay_amazon->setProductUploaded($saved_product['product_id'], $insertion_response['insertion_id'], $saved_product['sku']);
 		}
 

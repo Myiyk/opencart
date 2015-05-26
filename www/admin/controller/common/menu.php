@@ -170,7 +170,7 @@ class ControllerCommonMenu extends Controller {
 		$data['tax_class'] = $this->url->link('localisation/tax_class', 'token=' . $this->session->data['token'], 'SSL');
 		$data['tax_rate'] = $this->url->link('localisation/tax_rate', 'token=' . $this->session->data['token'], 'SSL');
 		$data['total'] = $this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL');
-		$data['www'] = $this->url->link('tool/www', 'token=' . $this->session->data['token'], 'SSL');
+		$data['upload'] = $this->url->link('tool/upload', 'token=' . $this->session->data['token'], 'SSL');
 		$data['user'] = $this->url->link('user/user', 'token=' . $this->session->data['token'], 'SSL');
 		$data['user_group'] = $this->url->link('user/user_permission', 'token=' . $this->session->data['token'], 'SSL');
 		$data['voucher'] = $this->url->link('sale/voucher', 'token=' . $this->session->data['token'], 'SSL');
