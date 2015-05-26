@@ -322,7 +322,7 @@ class ControllerCheckoutConfirm extends Controller {
 			$data['column_price'] = $this->language->get('column_price');
 			$data['column_total'] = $this->language->get('column_total');
 
-			$this->load->model('tool/www');
+			$this->load->model('tool/upload');
 
 			$data['products'] = array();
 

@@ -539,7 +539,7 @@ class ModelCheckoutOrder extends Model {
 
 				$data['shipping_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
-				$this->load->model('tool/www');
+				$this->load->model('tool/upload');
 
 				// Products
 				$data['products'] = array();
