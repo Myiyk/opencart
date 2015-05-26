@@ -49,7 +49,7 @@ class ControllerCommonCart extends Controller {
 		$data['button_remove'] = $this->language->get('button_remove');
 
 		$this->load->model('tool/image');
-		$this->load->model('tool/www');
+		$this->load->model('tool/upload');
 
 		$data['products'] = array();
 
