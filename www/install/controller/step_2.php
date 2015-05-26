@@ -87,7 +87,7 @@ class ControllerStep2 extends Controller {
 		$data['cache'] = DIR_SYSTEM . 'cache';
 		$data['logs'] = DIR_SYSTEM . 'logs';
 		$data['download'] = DIR_SYSTEM . 'download';
-		$data['www'] = DIR_SYSTEM . 'www';
+		$data['upload'] = DIR_SYSTEM . 'upload';
 		$data['image'] = DIR_OPENCART . 'image';
 		$data['image_cache'] = DIR_OPENCART . 'image/cache';
 		$data['image_data'] = DIR_OPENCART . 'image/catalog';
@@ -168,7 +168,7 @@ class ControllerStep2 extends Controller {
 			$this->error['warning'] = 'Warning: Download directory needs to be writable for OpenCart to work!';
 		}
 
-		if (!is_writable(DIR_SYSTEM . 'www')) {
+		if (!is_writable(DIR_SYSTEM . 'upload')) {
 			$this->error['warning'] = 'Warning: Upload directory needs to be writable for OpenCart to work!';
 		}
 
