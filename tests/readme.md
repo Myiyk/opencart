@@ -33,13 +33,3 @@ you have to run the standalone server: `java -jar selenium-server-standalone-2.3
 The tests are still under development, there is hundreds of them to do.
 
 The tests will drop and recreate tables in database specified in config.php and admin/config.php
-
-## Jenkins Users
-You will also see a build.xml file inside the project root which you can use to configure a Jenkins build.
-
-## We need you
-If you understand testing, then you know how important it is to any project. If you have a suggestion then we would really like to hear it!
-
-Forum thread: http://forum.opencart.com/viewtopic.php?f=177&t=124532
-
-Please help by contributing to writing unit tests and submitting a pull request!
