@@ -1,5 +1,8 @@
 <?php
 namespace DB;
+
+use App\Bridges\DatabaseTracy\ConnectionPanel;
+
 final class MySQLi {
 	private $link;
 
@@ -11,12 +14,24 @@ final class MySQLi {
 			exit();
 		}
 
+		ConnectionPanel::info('mysqli', $this->link->host_info, $this);
+
 		$this->link->set_charset("utf8");
-		$this->link->query("SET SQL_MODE = ''");
+		$this->query("SET SQL_MODE = ''");
 	}
 
 	public function query($sql) {
+		$startTime = microtime(true);
+
 		$query = $this->link->query($sql);
+
+		$time = microtime(true) - $startTime;
+
+		ConnectionPanel::logQuery($sql, array(
+			'time' => $time,
+			'error' => $this->link->error,
+			'rows' => $this->link->affected_rows,
+		));
 
 		if (!$this->link->errno) {
 			if ($query instanceof \mysqli_result) {
