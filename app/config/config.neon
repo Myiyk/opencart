@@ -20,3 +20,6 @@ session:
 
 services:
 	router: App\RouterFactory::createRouter
+
+includes:
+	- ../FrontModule/config/config.neon
