@@ -41,7 +41,7 @@ install:
 
 before_script:
   - mysql -u root -e 'CREATE DATABASE opencart_test;'
-  - mysql -u root opencart_test < tests/db-stuct.sql
+  - mysql -u root opencart_test < tests/db-struct.sql
 
 script:
   - ./vendor/bin/tester -p $TESTER_PHP_BIN -c ./tests/php.ini -s ./tests/
