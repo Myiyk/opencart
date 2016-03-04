@@ -31,7 +31,10 @@
 		"nette/security": "~2.3.0",
 		"nette/utils": "~2.3.0",
 		"latte/latte": "~2.3.0",
-		"tracy/tracy": "~2.3.0"
+		"tracy/tracy": "~2.3.0",
+		"cardinity/cardinity-sdk-php": "^1.0",
+		"braintree/braintree_php" : "3.2.0",
+		"leafo/scssphp": "0.0.12"
 	},
 	"require-dev": {
 		"nette/tester": "~1.4"

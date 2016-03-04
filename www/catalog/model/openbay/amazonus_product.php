@@ -52,8 +52,6 @@ class ModelOpenbayAmazonusProduct extends Model {
 	}
 
 	public function getProductQuantity($product_id, $var = '') {
-		$this->load->library('amazonus');
-
 		$result = null;
 
 		if ($var !== '' && $this->openbay->addonLoad('openstock')) {

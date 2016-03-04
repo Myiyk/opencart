@@ -1,6 +1,10 @@
 <?php
 class ModelOpenbayEbay extends Model{
 	public function install() {
+		$this->load->model('extension/event');
+
+		$this->model_extension_event->addEvent('openbaypro_ebay', 'catalog/model/checkout/order/addOrderHistory/before', 'openbay/ebay/eventAddOrderHistory');
+
 		$value                                  = array();
 		$value["ebay_token"]              = '';
 		$value["ebay_secret"]             = '';
@@ -217,15 +221,6 @@ class ModelOpenbayEbay extends Model{
 				  `html` MEDIUMTEXT NOT NULL,
 				  PRIMARY KEY (`template_id`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8;");
-
-		// register the event triggers
-		if (version_compare(VERSION, '2.0.1', '>=')) {
-			$this->load->model('extension/event');
-			$this->model_extension_event->addEvent('openbaypro_ebay', 'post.order.history.add', 'openbay/ebay/eventAddOrderHistory');
-		} else {
-			$this->load->model('tool/event');
-			$this->model_tool_event->addEvent('openbaypro_ebay', 'post.order.history.add', 'openbay/ebay/eventAddOrderHistory');
-		}
 	}
 
 	public function uninstall() {
@@ -240,29 +235,13 @@ class ModelOpenbayEbay extends Model{
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "ebay_order`;");
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "ebay_profile`;");
 
-		// remove the event triggers
-		if (version_compare(VERSION, '2.0.1', '>=')) {
-			$this->load->model('extension/event');
-			$this->model_extension_event->deleteEvent('openbaypro_ebay');
-		} else {
-			$this->load->model('tool/event');
-			$this->model_tool_event->deleteEvent('openbaypro_ebay');
-		}
+		$this->load->model('extension/event');
+		$this->model_extension_event->deleteEvent('openbaypro_ebay');
 	}
 
 	public function patch() {
 		if ($this->config->get('ebay_status') == 1) {
-			$this->load->model('setting/setting');
 
-			$this->openbay->ebay->updateSettings();
-
-			//remove the current events
-			$this->model_extension_event->deleteEvent('openbaypro_ebay');
-
-			//re-add the correct events
-			$this->model_extension_event->addEvent('openbaypro_ebay', 'post.order.history.add', 'openbay/ebay/eventAddOrderHistory');
-
-			return true;
 		}
 	}
 
@@ -320,7 +299,7 @@ class ModelOpenbayEbay extends Model{
 					'model'         => $row['model'],
 					'qty'           => $row['quantity'],
 					'name'          => $row['name'],
-					'link_edit'     => $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $row['product_id'], 'SSL'),
+					'link_edit'     => $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $row['product_id'], true),
 					'link_ebay'     => $this->config->get('ebay_itm_link') . $row['ebay_item_id'],
 					'reserve'       => (int)$row['reserve'],
 				);
@@ -804,7 +783,14 @@ class ModelOpenbayEbay extends Model{
 				$variant_data['opt'][$k]['sku']     	= $opt['sku'];
 				$variant_data['opt'][$k]['qty']     	= $stock['quantity'];
 				$variant_data['opt'][$k]['price']   	= number_format($opt['price'], 2, '.', '');
-				$variant_data['opt'][$k]['active']  	= $opt['active'];
+
+				// if any of the variants have 0 stock or no SKU set to inactive
+				if ($opt['sku'] == '' || $variant_data['opt'][$k]['qty'] < 1) {
+					$variant_data['opt'][$k]['active'] = 0;
+				} else {
+					$variant_data['opt'][$k]['active'] = $opt['active'];
+				}
+
 
 				$variant_option_values = $this->model_module_openstock->getVariant($opt['product_option_variant_id']);
 

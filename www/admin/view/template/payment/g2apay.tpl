@@ -83,7 +83,7 @@
 				<label class="col-sm-2 control-label" for="input-ipn-url"><span data-toggle="tooltip" title="<?php echo $help_ipn_url; ?>"><?php echo $entry_ipn_url; ?></span></label>
 				<div class="col-sm-10">
 				  <div class="input-group"><span class="input-group-addon"><i class="fa fa-link"></i></span>
-					<input type="text" readonly="readonly" value="<?php echo $g2apay_ipn_url; ?>" id="input-ipn-url" class="form-control" />
+					<input type="text" readonly value="<?php echo $g2apay_ipn_url; ?>" id="input-ipn-url" class="form-control" />
 				  </div>
 				</div>
 			  </div>
@@ -193,6 +193,20 @@
 				  <select name="g2apay_cancelled_status_id" class="form-control">
 					<?php foreach ($order_statuses as $order_status) { ?>
 						<?php if ($order_status['order_status_id'] == $g2apay_cancelled_status_id) { ?>
+							<option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+						<?php } else { ?>
+							<option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+						<?php } ?>
+					<?php } ?>
+				  </select>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label class="col-sm-2 control-label"><?php echo $entry_pending_status; ?></label>
+				<div class="col-sm-10">
+				  <select name="g2apay_pending_status_id" class="form-control">
+					<?php foreach ($order_statuses as $order_status) { ?>
+						<?php if ($order_status['order_status_id'] == $g2apay_pending_status_id) { ?>
 							<option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 						<?php } else { ?>
 							<option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>

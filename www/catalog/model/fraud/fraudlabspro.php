@@ -1,7 +1,7 @@
 <?php
 class ModelFraudFraudLabsPro extends Model {
 	public function check($data) {
-		// Do not performat fraud check if FraudLabs Pro is disabled or API key is not provided.
+		// Do not perform fraud check if FraudLabs Pro is disabled or API key is not provided.
 		if (!$this->config->get('fraudlabspro_status') ||!$this->config->get('fraudlabspro_key')) {
 			return;
 		}
@@ -15,7 +15,7 @@ class ModelFraudFraudLabsPro extends Model {
 			return;
 		}
 
-		$ip = $_SERVER['REMOTE_ADDR'];
+		$ip = $data['ip'];
 
 		// Detect client IP is store is behind CloudFlare protection.
 		if(isset($_SERVER['HTTP_CF_CONNECTING_IP']) && filter_var($_SERVER['HTTP_CF_CONNECTING_IP'], FILTER_VALIDATE_IP)){
@@ -34,6 +34,8 @@ class ModelFraudFraudLabsPro extends Model {
 
 		$request['key'] = $this->config->get('fraudlabspro_key');
 		$request['ip'] = $ip;
+		$request['first_name'] = $data['firstname'];
+		$request['last_name'] = $data['lastname'];
 		$request['bill_city'] = $data['payment_city'];
 		$request['bill_state'] = $data['payment_zone'];
 		$request['bill_country'] = $data['payment_iso_code_2'];
@@ -48,13 +50,17 @@ class ModelFraudFraudLabsPro extends Model {
 			$request['ship_zip_code'] = $data['shipping_postcode'];
 			$request['ship_country'] = $data['shipping_iso_code_2'];
 		}
-
+		
+		$request['email'] = $data['email'];
 		$request['email_hash'] = $this->hashIt($data['email']);
 		$request['amount'] = $this->currency->format($data['total'], $data['currency_code'], $data['currency_value'], false);
 		$request['quantity'] = 1;
 		$request['currency'] = $data['currency_code'];
+		$request['payment_mode'] = $data['payment_code'];
 		$request['user_order_id'] = $data['order_id'];
 		$request['format'] = 'json';
+		$request['source'] = 'opencart';
+		$request['source_version'] = '2.1.0.2';
 
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, 'https://api.fraudlabspro.com/v1/order/screen?' . http_build_query($request));

@@ -13,7 +13,7 @@
   </div>
   <div class="container-fluid">
     <div class="alert alert-warning"><?php echo $text_confirm_change_text; ?>: <strong><?php echo $status_mapped[$change_order_status_id]; ?></strong></div>
-    <form action="<?php echo $link_complete; ?>" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
+    <form action="<?php echo $link_complete; ?>" method="post" enctype="multipart/form-data" id="form" class="form">
       <table class="table table-bordered table-hover">
         <thead>
           <tr>
@@ -60,7 +60,6 @@
                   <?php } ?>
                 <?php } ?>
                 <?php if ($order['channel'] == 'Amazon EU') { ?>
-                  <a href="openbay_orderlist_confirm.tpl"></a>
                   <?php if ($change_order_status_id == $openbay_amazon_order_status_shipped) { ?>
                     <div class="form-group">
                       <label class="control-label"><?php echo $entry_carrier; ?></label>

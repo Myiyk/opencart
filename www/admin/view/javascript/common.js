@@ -31,12 +31,12 @@ $(document).ready(function() {
 	// Highlight any found errors
 	$('.text-danger').each(function() {
 		var element = $(this).parent().parent();
-		
+
 		if (element.hasClass('form-group')) {
 			element.addClass('has-error');
 		}
 	});
-	
+
 	// Set last page opened on the menu
 	$('#menu a[href]').on('click', function() {
 		sessionStorage.setItem('menu', $(this).attr('href'));
@@ -51,15 +51,15 @@ $(document).ready(function() {
 
 	if (localStorage.getItem('column-left') == 'active') {
 		$('#button-menu i').replaceWith('<i class="fa fa-dedent fa-lg"></i>');
-		
+
 		$('#column-left').addClass('active');
-		
+
 		// Slide Down Menu
 		$('#menu li.active').has('ul').children('ul').addClass('collapse in');
 		$('#menu li').not('.active').has('ul').children('ul').addClass('collapse');
 	} else {
 		$('#button-menu i').replaceWith('<i class="fa fa-indent fa-lg"></i>');
-		
+
 		$('#menu li li.active').has('ul').children('ul').addClass('collapse in');
 		$('#menu li li').not('.active').has('ul').children('ul').addClass('collapse');
 	}
@@ -80,7 +80,7 @@ $(document).ready(function() {
 			localStorage.setItem('column-left', 'active');
 
 			$('#button-menu i').replaceWith('<i class="fa fa-dedent fa-lg"></i>');
-			
+
 			$('#column-left').addClass('active');
 
 			// Add the slide down to open menu items
@@ -99,44 +99,83 @@ $(document).ready(function() {
 			$(this).parent('li').siblings().removeClass('open').children('ul.in').collapse('hide');
 		}
 	});
-	
-	// Override summernotes image manager
-	$('button[data-event=\'showImageDialog\']').attr('data-toggle', 'image').removeAttr('data-event');
-	
-	$(document).delegate('button[data-toggle=\'image\']', 'click', function() {
-		$('#modal-image').remove();
-		
-		$(this).parents('.note-editor').find('.note-editable').focus();
-				
-		$.ajax({
-			url: 'index.php?route=common/filemanager&token=' + getURLVar('token'),
-			dataType: 'html',
-			beforeSend: function() {
-				$('#button-image i').replaceWith('<i class="fa fa-circle-o-notch fa-spin"></i>');
-				$('#button-image').prop('disabled', true);
-			},
-			complete: function() {
-				$('#button-image i').replaceWith('<i class="fa fa-www"></i>');
-				$('#button-image').prop('disabled', false);
-			},
-			success: function(html) {
-				$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
-	
-				$('#modal-image').modal('show');
-			}
-		});	
+
+	// Tooltip remove fixed
+	$(document).delegate('[data-toggle=\'tooltip\']', 'click', function (e) {
+		$('body > .tooltip').remove();
 	});
-	
+
+	// Override summernotes image manager
+	$('.summernote').each(function () {
+		var element = this;
+
+		$(element).summernote({
+			disableDragAndDrop: true,
+			height: 300,
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'underline', 'clear']],
+				['fontname', ['fontname']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['table', ['table']],
+				['insert', ['link', 'image', 'video']],
+				['view', ['fullscreen', 'codeview', 'help']]
+			],
+			buttons: {
+				image: function () {
+					var ui = $.summernote.ui;
+
+					// create button
+					var button = ui.button({
+						contents: '<i class="fa fa-image" />',
+						tooltip: $.summernote.lang[$.summernote.options.lang].image.image,
+						click: function () {
+							$('#modal-image').remove();
+
+							$.ajax({
+								url: 'index.php?route=common/filemanager&token=' + getURLVar('token'),
+								dataType: 'html',
+								beforeSend: function () {
+									$('#button-image i').replaceWith('<i class="fa fa-circle-o-notch fa-spin"></i>');
+									$('#button-image').prop('disabled', true);
+								},
+								complete: function () {
+									$('#button-image i').replaceWith('<i class="fa fa-upload"></i>');
+									$('#button-image').prop('disabled', false);
+								},
+								success: function (html) {
+									$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
+
+									$('#modal-image').modal('show');
+
+									$('#modal-image a.thumbnail').on('click', function (e) {
+										e.preventDefault();
+
+										$(element).summernote('insertImage', $(this).attr('href'));
+
+										$('#modal-image').modal('hide');
+									});
+								}
+							});
+						}
+					});
+					return button.render();
+				}
+			}
+		});
+	});
+
 	// Image Manager
 	$(document).delegate('a[data-toggle=\'image\']', 'click', function(e) {
 		e.preventDefault();
-		
+
 		$('.popover').popover('hide', function() {
 			$('.popover').remove();
 		});
-					
+
 		var element = this;
-		
+
 		$(element).popover({
 			html: true,
 			placement: 'right',
@@ -145,12 +184,12 @@ $(document).ready(function() {
 				return '<button type="button" id="button-image" class="btn btn-primary"><i class="fa fa-pencil"></i></button> <button type="button" id="button-clear" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>';
 			}
 		});
-		
+
 		$(element).popover('show');
 
 		$('#button-image').on('click', function() {
 			$('#modal-image').remove();
-		
+
 			$.ajax({
 				url: 'index.php?route=common/filemanager&token=' + getURLVar('token') + '&target=' + $(element).parent().find('input').attr('id') + '&thumb=' + $(element).attr('id'),
 				dataType: 'html',
@@ -164,27 +203,27 @@ $(document).ready(function() {
 				},
 				success: function(html) {
 					$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
-		
+
 					$('#modal-image').modal('show');
 				}
 			});
-			
+
 			$(element).popover('hide', function() {
 				$('.popover').remove();
 			});
-		});		
-		
+		});
+
 		$('#button-clear').on('click', function() {
 			$(element).find('img').attr('src', $(element).find('img').attr('data-placeholder'));
-			
+
 			$(element).parent().find('input').attr('value', '');
-			
+
 			$(element).popover('hide', function() {
 				$('.popover').remove();
 			});
 		});
 	});
-	
+
 	// tooltips on hover
 	$('[data-toggle=\'tooltip\']').tooltip({container: 'body', html: true});
 
@@ -192,19 +231,19 @@ $(document).ready(function() {
 	$(document).ajaxStop(function() {
 		$('[data-toggle=\'tooltip\']').tooltip({container: 'body'});
 	});
-	
+
 	// https://github.com/opencart/opencart/issues/2595
 	$.event.special.remove = {
 		remove: function(o) {
-			if (o.handler) { 
+			if (o.handler) {
 				o.handler.apply(this, arguments);
 			}
 		}
 	}
-	
+
 	$('[data-toggle=\'tooltip\']').on('remove', function() {
 		$(this).tooltip('destroy');
-	});	
+	});
 });
 
 // Autocomplete */
@@ -213,23 +252,23 @@ $(document).ready(function() {
 		return this.each(function() {
 			this.timer = null;
 			this.items = new Array();
-	
+
 			$.extend(this, option);
-	
+
 			$(this).attr('autocomplete', 'off');
-			
+
 			// Focus
 			$(this).on('focus', function() {
 				this.request();
 			});
-			
+
 			// Blur
 			$(this).on('blur', function() {
 				setTimeout(function(object) {
 					object.hide();
-				}, 200, this);				
+				}, 200, this);
 			});
-			
+
 			// Keydown
 			$(this).on('keydown', function(event) {
 				switch(event.keyCode) {
@@ -239,64 +278,64 @@ $(document).ready(function() {
 					default:
 						this.request();
 						break;
-				}				
+				}
 			});
-			
+
 			// Click
 			this.click = function(event) {
 				event.preventDefault();
-	
+
 				value = $(event.target).parent().attr('data-value');
-	
+
 				if (value && this.items[value]) {
 					this.select(this.items[value]);
 				}
 			}
-			
+
 			// Show
 			this.show = function() {
 				var pos = $(this).position();
-	
+
 				$(this).siblings('ul.dropdown-menu').css({
 					top: pos.top + $(this).outerHeight(),
 					left: pos.left
 				});
-	
+
 				$(this).siblings('ul.dropdown-menu').show();
 			}
-			
+
 			// Hide
 			this.hide = function() {
 				$(this).siblings('ul.dropdown-menu').hide();
-			}		
-			
+			}
+
 			// Request
 			this.request = function() {
 				clearTimeout(this.timer);
-		
+
 				this.timer = setTimeout(function(object) {
 					object.source($(object).val(), $.proxy(object.response, object));
 				}, 200, this);
 			}
-			
+
 			// Response
 			this.response = function(json) {
 				html = '';
-	
+
 				if (json.length) {
 					for (i = 0; i < json.length; i++) {
 						this.items[json[i]['value']] = json[i];
 					}
-	
+
 					for (i = 0; i < json.length; i++) {
 						if (!json[i]['category']) {
 							html += '<li data-value="' + json[i]['value'] + '"><a href="#">' + json[i]['label'] + '</a></li>';
 						}
 					}
-	
+
 					// Get all the ones with a categories
 					var category = new Array();
-	
+
 					for (i = 0; i < json.length; i++) {
 						if (json[i]['category']) {
 							if (!category[json[i]['category']]) {
@@ -304,32 +343,32 @@ $(document).ready(function() {
 								category[json[i]['category']]['name'] = json[i]['category'];
 								category[json[i]['category']]['item'] = new Array();
 							}
-	
+
 							category[json[i]['category']]['item'].push(json[i]);
 						}
 					}
-	
+
 					for (i in category) {
 						html += '<li class="dropdown-header">' + category[i]['name'] + '</li>';
-	
+
 						for (j = 0; j < category[i]['item'].length; j++) {
 							html += '<li data-value="' + category[i]['item'][j]['value'] + '"><a href="#">&nbsp;&nbsp;&nbsp;' + category[i]['item'][j]['label'] + '</a></li>';
 						}
 					}
 				}
-	
+
 				if (html) {
 					this.show();
 				} else {
 					this.hide();
 				}
-	
+
 				$(this).siblings('ul.dropdown-menu').html(html);
 			}
-			
+
 			$(this).after('<ul class="dropdown-menu"></ul>');
-			$(this).siblings('ul.dropdown-menu').delegate('a', 'click', $.proxy(this.click, this));	
-			
+			$(this).siblings('ul.dropdown-menu').delegate('a', 'click', $.proxy(this.click, this));
+
 		});
 	}
 })(window.jQuery);

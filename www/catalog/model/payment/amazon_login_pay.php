@@ -67,9 +67,9 @@ class ModelPaymentAmazonLoginPay extends Model {
 		$update_paramter_data['OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId'] = $order_id;
 		$update_paramter_data['OrderReferenceAttributes.SellerOrderAttributes.StoreName'] = $this->config->get('config_name');
 		if ($this->config->get('amazon_login_pay_marketplace') == 'us') {
-			$update_paramter_data['OrderReferenceAttributes.OrderTotal.PlatformId'] = 'A3GK1RS09H3A7D';
+			$update_paramter_data['OrderReferenceAttributes.PlatformId'] = 'A3GK1RS09H3A7D';
 		} else {
-			$update_paramter_data['OrderReferenceAttributes.OrderTotal.PlatformId'] = 'A3EIRX2USI2KJV';
+			$update_paramter_data['OrderReferenceAttributes.PlatformId'] = 'A3EIRX2USI2KJV';
 		}
 
 		$address_paramter_data['AddressConsentToken'] = $this->session->data['access_token'];
@@ -209,9 +209,11 @@ class ModelPaymentAmazonLoginPay extends Model {
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "amazon_login_pay_order_transaction` WHERE `amazon_login_pay_order_id` = '" . (int)$amazon_login_pay_order_id . "'");
 
 		$transactions = array();
+
 		if ($query->num_rows) {
 			foreach ($query->rows as $row) {
 				$row['amount'] = $this->currency->format($row['amount'], $currency_code, true, true);
+
 				$transactions[] = $row;
 			}
 			return $transactions;
@@ -462,7 +464,7 @@ class ModelPaymentAmazonLoginPay extends Model {
 		if ($this->config->get('amazon_login_pay_debug')) {
 			$log = new Log('amazon_login_pay.log');
 			$backtrace = debug_backtrace();
-			$log->write($backtrace[1]['class'] . '::' . $backtrace[1]['function'] . ' Data:  ' . print_r($data, 1));
+			$log->write($backtrace[6]['class'] . '::' . $backtrace[6]['function'] . ' Data:  ' . print_r($data, 1));
 		}
 	}
 

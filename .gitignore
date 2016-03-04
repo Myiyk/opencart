@@ -2,10 +2,6 @@
 /www/config.php
 /www/admin/config.php
 
-# System Cache Files
-/www/system/cache/*
-!/www/system/cache/index.html
-
 # Image File
 !/www/image/no_image.jpg
 
@@ -13,31 +9,33 @@
 /www/image/cache/*
 !/www/image/cache/index.html
 
+# System Cache Files
+/www/system/storage/cache/*
+!/www/system/storage/cache/index.html
+
 # Modification Files
-/www/system/modification/*
-!/www/system/modification/index.html
+/www/system/storage/modification/*
+!/www/system/storage/modification/index.html
 
 # Templates Files
 /www/image/templates/*
 /www/image/templates/default.jpg
 
 # Download Files
-/www/system/download/*
-!/www/system/download/index.html
+/www/system/storage/download/*
+!/www/system/storage/download/index.html
 
 # Upload Files
-/www/system/upload/*
-!/www/system/upload/index.html
-
-!/www/data/index.html
+/www/system/storage/upload/*
+!/www/system/storage/upload/index.html
 
 # Flags 
 # remove sharp char if you want to add flags to gitignore
 # /www/flags/*
 
 # Log Files
-/www/system/logs/*
-!/www/system/logs/index.html
+/www/system/storage/logs/*
+!/www/system/storage/logs/index.html
 
 # If you want to ignore install file use following lines [on development mode]
 # /www/backup.install/*
@@ -46,7 +44,12 @@
 # Ignore all vendor files included by composer and the lock file
 /tests/phpunit/vendor/*
 /tests/phpunit/composer.lock
-/.idea/*
+
+# Test Config File
+/tests/phpunit/bootstrap.php
+
+# IDE Project files
+/.idea
 
 /vendor
-app/config/config.local.neon
+composer.lock

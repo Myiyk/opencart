@@ -4,25 +4,13 @@ class ModelOpenbayOpenbay extends Model {
 	private $error;
 
 	public function patch() {
-		/**
-		 * Fix to update event names on versions later than 2.0.1 due to the change.
-		 */
-		if (version_compare(VERSION, '2.0.1', '>=')) {
-			$this->load->model('extension/event');
 
-			$this->model_extension_event->deleteEvent('openbay');
-
-			$this->model_extension_event->addEvent('openbay', 'post.admin.product.delete', 'extension/openbay/eventDeleteProduct');
-			$this->model_extension_event->addEvent('openbay', 'post.admin.product.edit', 'extension/openbay/eventEditProduct');
-		}
 	}
 
 	public function updateV2Test() {
 		$this->error = array();
 
 		$this->openbay->log('Starting update test');
-
-		$web_root = preg_replace('/system\/$/', '', DIR_SYSTEM);
 
 		if (!function_exists("exception_error_handler")) {
 			function exception_error_handler($errno, $errstr, $errfile, $errline ) {
@@ -38,9 +26,9 @@ class ModelOpenbayOpenbay extends Model {
 		}
 
 		// create a tmp folder
-		if (!is_dir($web_root . '/system/download/tmp')) {
+		if (!is_dir(DIR_DOWNLOAD . '/tmp')) {
 			try {
-				mkdir($web_root . '/system/download/tmp');
+				mkdir(DIR_DOWNLOAD . '/tmp');
 			} catch(ErrorException $ex) {
 				$this->error[] = $ex->getMessage();
 			}
@@ -48,7 +36,7 @@ class ModelOpenbayOpenbay extends Model {
 
 		// create tmp file
 		try {
-			$tmp_file = fopen($web_root . '/system/download/tmp/test_file.php', 'w+');
+			$tmp_file = fopen(DIR_DOWNLOAD . '/tmp/test_file.php', 'w+');
 		} catch(ErrorException $ex) {
 			$this->error[] = $ex->getMessage();
 		}
@@ -69,14 +57,14 @@ class ModelOpenbayOpenbay extends Model {
 
 		// remove tmp file
 		try {
-			unlink($web_root . '/system/download/tmp/test_file.php');
+			unlink(DIR_DOWNLOAD . '/tmp/test_file.php');
 		} catch(ErrorException $ex) {
 			$this->error[] = $ex->getMessage();
 		}
 
 		// delete tmp folder
 		try {
-			rmdir($web_root . '/system/download/tmp');
+			rmdir(DIR_DOWNLOAD . '/tmp');
 		} catch(ErrorException $ex) {
 			$this->error[] = $ex->getMessage();
 		}
@@ -100,7 +88,7 @@ class ModelOpenbayOpenbay extends Model {
 
 		$this->openbay->log('Start check version, beta: ' . $beta . ', current: ' . $current_version);
 
-		$post = array('version' => 2, 'beta' => $beta);
+		$post = array('version' => 4, 'beta' => $beta);
 
 		$data = $this->call('update/version/', $post);
 
@@ -122,12 +110,10 @@ class ModelOpenbayOpenbay extends Model {
 	public function updateV2Download($beta = 0) {
 		$this->openbay->log('Downloading');
 
-		$web_root = preg_replace('/system\/$/', '', DIR_SYSTEM);
-
-		$local_file = $web_root . 'system/download/openbaypro_update.zip';
+		$local_file = DIR_DOWNLOAD . '/openbaypro_update.zip';
 		$handle = fopen($local_file, "w+");
 
-		$post = array('version' => 2, 'beta' => $beta);
+		$post = array('version' => 4, 'beta' => $beta);
 
 		$defaults = array(
 			CURLOPT_POST => 1,
@@ -173,7 +159,7 @@ class ModelOpenbayOpenbay extends Model {
 		try {
 			$zip = new ZipArchive();
 
-			if ($zip->open($web_root . 'system/download/openbaypro_update.zip')) {
+			if ($zip->open(DIR_DOWNLOAD . 'openbaypro_update.zip')) {
 				$zip->extractTo($web_root);
 				$zip->close();
 			} else {
@@ -250,7 +236,7 @@ class ModelOpenbayOpenbay extends Model {
 	}
 
 	public function updateV2UpdateVersion($beta = 0) {
-		$post = array('version' => 2, 'beta' => $beta);
+		$post = array('version' => 4, 'beta' => $beta);
 
 		$data = $this->call('update/version/', $post);
 
